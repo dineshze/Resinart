@@ -1,0 +1,73 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap");
+
+@import "tailwindcss";
+
+/* 1. Dark Mode Configuration */
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* 2. Font Family Configuration */
+  --font-sans: "Inter", "ui-sans-serif", "system-ui";
+  --font-display: "Playfair Display", "Georgia", "serif";
+
+  /* 3. Custom Colors Configuration */
+  --color-pearl: #fbf7f2;
+  --color-shell: #f3d8d1;
+  --color-tide: #79b8bd;
+  --color-lagoon: #1e7a83;
+  --color-ink: #172426;
+  --color-coral: #e88973;
+  --color-glass: rgba(255, 255, 255, 0.64);
+
+  /* 4. Custom Box Shadows Configuration */
+  --shadow-resin: 0 24px 70px rgba(33, 91, 99, 0.18);
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #fbf7f2;
+}
+
+.dark body {
+  background: #172426;
+}
+
+.resin-bg {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(232, 137, 115, .28), transparent 26%),
+    radial-gradient(circle at 80% 8%, rgba(121, 184, 189, .34), transparent 28%),
+    linear-gradient(135deg, rgba(251, 247, 242, .96), rgba(243, 216, 209, .68) 48%, rgba(223, 244, 242, .86));
+}
+
+.dark .resin-bg {
+  background:
+    radial-gradient(circle at 14% 16%, rgba(232, 137, 115, .18), transparent 25%),
+    radial-gradient(circle at 84% 6%, rgba(121, 184, 189, .2), transparent 30%),
+    linear-gradient(135deg, #172426, #203537 58%, #163d42);
+}
+
+.glass {
+  border: 1px solid rgba(255, 255, 255, .48);
+  background: rgba(255, 255, 255, .62);
+  backdrop-filter: blur(18px);
+}
+
+.dark .glass {
+  border-color: rgba(255, 255, 255, .12);
+  background: rgba(23, 36, 38, .58);
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
