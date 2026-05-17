@@ -50,7 +50,7 @@ export default function Home() {
             <Sparkles size={16} /> Small-batch resin art studio
           </div>
           <h1 className="font-display text-5xl font-bold leading-tight sm:text-6xl lg:text-7xl">
-            Ocean-inspired resin pieces for tender, useful spaces.
+            Happy Creation.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-ink/68 dark:text-pearl/70">
             Handmade trays, keychains, coasters, jewelry dishes, shell art, and custom gifts poured with soft coastal color and careful finishing.
@@ -89,7 +89,7 @@ export default function Home() {
         <div className="flex flex-col gap-5 md:flex-col md:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[.28em] text-coral">Collection</p>
-            <h2 className="mt-3 font-display text-4xl font-bold sm:text-5xl">Handmade pieces with everyday purpose</h2>
+            <h2 className="mt-3 font-display text-4xl font-bold sm:text-5xl">Handmade pieces</h2>
           </div>
           <div className="flex max-w-full gap-2 overflow-x-auto pb-2">
             {categories.map((category) => (
