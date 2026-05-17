@@ -7,65 +7,65 @@ dotenv.config();
 
 const products = [
   {
-    name: "Ocean Pour Tray",
-    price: 54,
-    category: "Trays",
-    description: "Layered resin tray with foamy wave textures and pearl shell accents.",
-    image: "https://images.unsplash.com/photo-1618220179428-22790b461013?auto=format&fit=crop&w=900&q=80",
-    stock: 6,
-    featured: true
-  },
-  {
-    name: "Shell Bloom Coasters",
-    price: 28,
-    category: "Coasters",
-    description: "Pastel coaster set with dried flowers, mica shimmer, and sealed edges.",
-    image: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=900&q=80",
-    stock: 12,
-    featured: true
-  },
-  {
-    name: "Sea Glass Keychain",
-    price: 12,
-    category: "Keychains",
-    description: "Pocket-sized resin charm with sea glass tones and gold initials.",
-    image: "https://images.unsplash.com/photo-1602173574767-37ac01994b2a?auto=format&fit=crop&w=900&q=80",
-    stock: 20
-  },
-  {
-    name: "Lagoon Jewelry Dish",
-    price: 34,
-    category: "Jewelry",
-    description: "Small handmade dish for rings and earrings with translucent ocean depth.",
-    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=900&q=80",
-    stock: 8
-  },
-  {
-    name: "Shell Wall Tide",
-    price: 68,
-    category: "Shell Art",
-    description: "Textured shell art panel inspired by quiet shoreline mornings.",
-    image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
-    stock: 3,
-    featured: true
-  },
-  {
-    name: "Custom Name Gift",
-    price: 42,
-    category: "Custom Gifts",
-    description: "Personalized resin keepsake with color palette, name, and embedded details.",
-    image: "https://images.unsplash.com/photo-1511988617509-a57c8a288659?auto=format&fit=crop&w=900&q=80",
-    stock: 10
-  }
+  name: "Ocean Breeze Resin Serving Tray",
+  price: 5800,
+  category: "Trays",
+  description: "Handcrafted ocean-inspired resin tray featuring elegant wave textures and premium glossy finishing.",
+  image: "https://i1-e.pinimg.com/1200x/88/e2/74/88e2744e8f96e6802cb55d395b943fef.jpg",
+  featured: true
+},
+{
+  name: "Anniversary Floral Resin Coasters",
+  price: 3000,
+  category: "Coasters",
+  description: "Elegant floral preservation coasters designed to preserve special memories with a luxurious finish.",
+  image: "https://i1-e.pinimg.com/1200x/9d/cd/f7/9dcdf751cdcbd66f21ab93547e2c2e76.jpg",
+  featured: true
+},
+{
+  name: "Royal Rose Preservation Frame",
+  price: 4200,
+  category: "Frames",
+  description: "Premium resin preservation frame with ocean blue aesthetics and delicate pearl shell detailing.",
+  image: "https://i.pinimg.com/736x/ba/7b/54/ba7b54ba1f662d0b50622ed0ca3ea97a.jpg",
+  featured: true
+},
+{
+  name: "Golden Shore Luxury Tray",
+  price: 6500,
+  category: "Trays",
+  description: "Luxury handcrafted resin tray inspired by golden beach waves with refined artistic detailing.",
+  image: "https://i1-e.pinimg.com/1200x/5f/38/0f/5f380f146a4b555ce88f72ebedca9f5d.jpg",
+  featured: true
+},
+{
+  name: "Pearl Baby Resin Wall Clock",
+  price: 3800,
+  category: "Wall Art",
+  description: "Minimal handcrafted resin wall clock featuring soft pearl textures and elegant decorative styling.",
+  image: "https://i1-e.pinimg.com/736x/16/bb/49/16bb494fd4d321525bbb98209bf6bc2d.jpg"
+},
+{
+  name: "Blossom Floral Resin Tray",
+  price: 5400,
+  category: "Trays",
+  description: "Elegant floral resin tray with premium gold-edge detailing and a glossy handcrafted finish.",
+  image: "https://i1-e.pinimg.com/1200x/b7/65/c8/b765c8396edf97c3c8efc120470fb33a.jpg"
+},
+{
+  name: "Wedding Varmala Preservation Art",
+  price: 7800,
+  category: "Decor",
+  description: "Custom varmala preservation artwork crafted in premium resin with timeless decorative appeal.",
+  image: "https://i.pinimg.com/736x/cf/9a/a4/cf9aa45682b073a4d2ff85b5699f2355.jpg",
+  featured: true
+}
 ];
 
 async function seed() {
   await connectDB();
-  await User.deleteMany({});
-  await Product.deleteMany({});
-  await User.create({ name: "Resin Admin", email: "admin@resinart.local", password: "admin12345", role: "admin" });
   await Product.insertMany(products);
-  console.log("Seeded admin and products");
+  console.log("Seeded all products");
   process.exit(0);
 }
 
