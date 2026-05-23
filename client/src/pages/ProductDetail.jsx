@@ -5,7 +5,6 @@ import api from "../api/axios";
 import EmptyState from "../components/EmptyState";
 import ProductCard from "../components/ProductCard";
 import { useCart } from "../context/CartContext";
-import { fallbackProducts } from "../data/fallbackProducts";
 import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
 
@@ -19,12 +18,6 @@ export default function ProductDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const demo = fallbackProducts.find((item) => item._id === id);
-    if (demo) {
-      setProduct(demo);
-      setLoading(false);
-      return;
-    }
     api
       .get(`/products/${id}`)
       .then(({ data }) => setProduct(data))
@@ -34,11 +27,6 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (!product?.category) return;
-    const demoRecommended = fallbackProducts.filter((item) => item.category === product.category && item._id !== product._id).slice(0, 4);
-    if (demoRecommended.length) {
-      setRecommended(demoRecommended);
-      return;
-    }
     setRecommendedLoading(true);
     api
       .get(`/products?category=${encodeURIComponent(product.category)}`)
