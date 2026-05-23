@@ -4,9 +4,14 @@ import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import api from "../api/axios";
 import EmptyState from "../components/EmptyState";
+import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
 
 const steps = ["pending", "confirmed", "processing", "shipped", "delivered"];
+
+function prettyStatus(status = "") {
+  return status.replaceAll("_", " ");
+}
 
 export default function OrderDetail() {
   const { id } = useParams();
@@ -27,13 +32,13 @@ export default function OrderDetail() {
   const activeIndex = steps.indexOf(order.orderStatus);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
+    <main className="mx-auto max-w-6xl overflow-x-hidden px-4 py-10 sm:px-6 lg:px-8">
       <Link to="/orders" className="inline-flex items-center gap-2 rounded-full glass px-4 py-2 text-sm font-semibold"><ArrowLeft size={16} /> Orders</Link>
-      <section className="mt-8 rounded-[34px] glass p-6 shadow-resin">
+      <section className="mt-8 min-w-0 rounded-[34px] glass p-5 shadow-resin sm:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div>
+          <div className="min-w-0">
             <p className="text-sm font-semibold uppercase tracking-[.28em] text-coral">Tracking</p>
-            <h1 className="mt-2 font-display text-4xl font-bold">Order #{order._id.slice(-6).toUpperCase()}</h1>
+            <h1 className="mt-2 break-all font-display text-4xl font-bold">Order #{order._id.slice(-6).toUpperCase()}</h1>
           </div>
           <span className="w-fit rounded-full bg-coral/16 px-4 py-2 text-sm font-semibold uppercase text-coral">{order.orderStatus}</span>
         </div>
@@ -46,23 +51,28 @@ export default function OrderDetail() {
           ))}
         </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_340px]">
+        <div className="mt-8 grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
           <div className="grid gap-3">
             {order.items.map((item) => (
-              <div key={item.product} className="flex gap-4 rounded-3xl bg-white/44 p-3 dark:bg-white/8">
-                <img src={item.image} alt={item.name} className="h-20 w-20 rounded-2xl object-cover" />
+              <div key={item.product} className="flex min-w-0 gap-4 rounded-3xl bg-white/44 p-3 dark:bg-white/8">
+                <img src={cloudinaryImage(item.image, { width: 220 })} alt={item.name} loading="lazy" className="h-20 w-20 shrink-0 rounded-2xl object-cover" />
                 <div className="min-w-0 flex-1">
-                  <h2 className="truncate font-semibold">{item.name}</h2>
+                  <h2 className="break-words font-semibold">{item.name}</h2>
                   <p className="text-sm text-ink/60 dark:text-pearl/64">Qty {item.quantity}</p>
                 </div>
-                <p className="font-semibold">{formatMoney(item.price * item.quantity)}</p>
+                <p className="shrink-0 font-semibold">{formatMoney(item.price * item.quantity)}</p>
               </div>
             ))}
           </div>
-          <aside className="rounded-[28px] bg-white/44 p-5 dark:bg-white/8">
+          <aside className="min-w-0 rounded-[28px] bg-white/44 p-5 dark:bg-white/8">
             <PackageCheck className="text-lagoon dark:text-tide" />
             <div className="mt-4 flex justify-between text-lg font-bold"><span>Total</span><span>{formatMoney(order.totalAmount)}</span></div>
-            <p className="mt-2 text-sm text-ink/60 dark:text-pearl/64">{order.payment.method.toUpperCase()} - {order.payment.status.replace("_", " ")}</p>
+            <p className="mt-2 break-words text-sm capitalize text-ink/60 dark:text-pearl/64">{prettyStatus(order.paymentMethod || order.payment.method)} - {prettyStatus(order.paymentStatus || order.payment.status)}</p>
+            {order.paymentScreenshot?.url && (
+              <a href={order.paymentScreenshot.url} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-full bg-lagoon/14 px-4 py-2 text-sm font-semibold text-lagoon dark:text-tide">
+                View payment screenshot
+              </a>
+            )}
             <div className="mt-5 border-t border-white/50 pt-5 dark:border-white/10">
               <MapPin className="text-coral" />
               <p className="mt-3 font-semibold">{order.shippingAddress.fullName}</p>

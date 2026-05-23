@@ -1,16 +1,19 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+
+import cors from "cors";
 import express from "express";
 import fs from "fs";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
+import { initCloudinary } from "./utils/cloudinary.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 
-dotenv.config();
+initCloudinary();
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);

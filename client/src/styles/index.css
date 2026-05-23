@@ -26,12 +26,40 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   background: #fbf7f2;
+  overflow-x: hidden;
+}
+
+* {
+  overflow-wrap: anywhere;
+}
+
+input,
+textarea,
+select {
+  color: #172426;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(23, 36, 38, .48);
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+  color: #fbf7f2;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: rgba(251, 247, 242, .52);
 }
 
 .dark body {

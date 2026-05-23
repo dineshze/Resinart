@@ -11,7 +11,6 @@ function normalizeItem(product, quantity) {
     price: Number(product.price),
     image: product.image,
     category: product.category,
-    stock: product.stock ?? 99,
     quantity
   };
 }
