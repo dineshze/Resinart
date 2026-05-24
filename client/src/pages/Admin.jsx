@@ -7,7 +7,7 @@ import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
 
 const blankProduct = { name: "", price: "", category: "Trays", description: "", image: "", featured: false };
-const categories = ["Resin Art", "Keychains","Jewellery", "Preservation", "Lipan Art", "Mandala Art","Photo frame","Portrait","Name Plate"];
+const categories = ["Resin Art", "Keychains","Jewellery", "Preservation", "Lipan Art", "Photo frame","Portrait","Name Plate"];
 const orderStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 const paymentStatuses = ["payment_pending", "screenshot_uploaded", "payment_verified", "payment_rejected"];
 
@@ -222,7 +222,7 @@ export default function Admin() {
 
         <div className="min-w-0 rounded-[34px] glass p-5 shadow-resin sm:p-6">
           <h2 className="font-display text-3xl font-bold">Products</h2>
-          <div className="mt-5 grid gap-3">
+          <div className="mt-5 grid gap-3 max-h-screen overflow-y-auto pr-2">
             {loading && <div className="h-28 animate-pulse rounded-3xl bg-white/50 dark:bg-white/10" />}
             {!loading && products.length === 0 && <EmptyState title="No products yet" text="Add the first handmade piece to publish it." />}
             {products.map((product) => (
