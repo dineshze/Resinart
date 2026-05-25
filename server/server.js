@@ -27,6 +27,33 @@ app.use(morgan("dev"));
 app.use("/uploads", express.static(uploadsPath));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
+app.get("/api/pincode/:pincode", async (req, res, next) => {
+  try {
+    const { pincode } = req.params;
+    if (!/^\d{6}$/.test(pincode)) {
+      return res.status(400).json({ message: "Enter a valid 6 digit pincode" });
+    }
+
+    const response = await fetch(`http://www.postalpincode.in/api/pincode/${pincode}`);
+    if (!response.ok) {
+      return res.status(502).json({ message: "Pincode lookup service is unavailable" });
+    }
+
+    const data = await response.json();
+    const postOffice = data?.PostOffice?.[0];
+    if (data?.Status !== "Success" || !postOffice) {
+      return res.status(404).json({ message: "Could not find this pincode" });
+    }
+
+    res.json({
+      city: postOffice.District,
+      district: postOffice.District,
+      state: postOffice.State
+    });
+  } catch (error) {
+    next(error);
+  }
+});
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/orders", orderRoutes);

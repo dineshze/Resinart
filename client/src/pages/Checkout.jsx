@@ -1,9 +1,10 @@
 import { CheckCircle2, Clipboard, ExternalLink, ImagePlus, ImageUp, Loader2, QrCode, ShieldCheck, Type, X } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import EmptyState from "../components/EmptyState";
+import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
@@ -25,7 +26,9 @@ function createOrderRef() {
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart();
-  const [shippingAddress, setShippingAddress] = useState(initialAddress);
+  const { user } = useAuth();
+  const [shippingAddress, setShippingAddress] = useState(() => ({ ...initialAddress, fullName: user?.name || "" }));
+  const [pincodeLookup, setPincodeLookup] = useState({ loading: false, error: "" });
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [preview, setPreview] = useState("");
@@ -38,6 +41,41 @@ export default function Checkout() {
   const fileInputRef = useRef(null);
   const customInputRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user?.name) return;
+    setShippingAddress((current) => (current.fullName ? current : { ...current, fullName: user.name }));
+  }, [user?.name]);
+
+  useEffect(() => {
+    const pincode = shippingAddress.pincode;
+    if (pincode.length !== 6) {
+      setPincodeLookup({ loading: false, error: "" });
+      return;
+    }
+
+    const controller = new AbortController();
+    setPincodeLookup({ loading: true, error: "" });
+
+    api.get(`/pincode/${pincode}`, { signal: controller.signal })
+      .then((data) => {
+        setShippingAddress((current) => {
+          if (current.pincode !== pincode) return current;
+          return {
+            ...current,
+            city: data.data.city || current.city,
+            state: data.data.state || current.state
+          };
+        });
+        setPincodeLookup({ loading: false, error: "" });
+      })
+      .catch((error) => {
+        if (error.name === "CanceledError" || error.code === "ERR_CANCELED") return;
+        setPincodeLookup({ loading: false, error: error.response?.data?.message || "Could not fetch pincode details" });
+      });
+
+    return () => controller.abort();
+  }, [shippingAddress.pincode]);
 
   const paymentNote = useMemo(() => {
     const lines = items.map((item) => `${shortProductCode(item.productId)} | ${item.name}`);
@@ -142,6 +180,11 @@ export default function Checkout() {
 
   function removeCustomImage(url) {
     setCustomImages((current) => current.filter((image) => image.url !== url));
+  }
+
+  function updateShippingAddress(key, value) {
+    const nextValue = key === "pincode" ? value.replace(/\D/g, "").slice(0, 6) : value;
+    setShippingAddress((current) => ({ ...current, [key]: nextValue }));
   }
 
   async function placeOrder(event) {
@@ -255,20 +298,27 @@ export default function Checkout() {
               ["fullName", "Full Name"],
               ["phone", "Phone Number"],
               ["address", "Address"],
+              ["pincode", "Pincode"],
               ["city", "City"],
-              ["state", "State"],
-              ["pincode", "Pincode"]
+              ["state", "State"]
             ].map(([key, label]) => (
               <input
                 key={key}
                 required
                 value={shippingAddress[key]}
-                onChange={(e) => setShippingAddress({ ...shippingAddress, [key]: e.target.value })}
+                onChange={(e) => updateShippingAddress(key, e.target.value)}
                 placeholder={label}
+                inputMode={key === "pincode" || key === "phone" ? "numeric" : undefined}
+                maxLength={key === "pincode" ? 6 : undefined}
                 className={`min-w-0 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 text-ink outline-none transition placeholder:text-ink/48 focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10 dark:text-pearl dark:placeholder:text-pearl/48 ${key === "address" ? "sm:col-span-2" : ""}`}
               />
             ))}
           </div>
+          {(pincodeLookup.loading || pincodeLookup.error) && (
+            <p className={`mt-2 text-sm font-semibold ${pincodeLookup.error ? "text-coral" : "text-ink/60 dark:text-pearl/64"}`}>
+              {pincodeLookup.error || "Fetching city and state..."}
+            </p>
+          )}
           </div>
 
           <div className="mt-6 rounded-[28px] bg-white/50 p-4 dark:bg-white/8 sm:p-5">

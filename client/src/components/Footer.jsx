@@ -12,13 +12,13 @@ export default function Footer() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3 md:justify-end">
-            <a href="https://instagram.com" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-coral">
+            <a href="https://www.instagram.com/crafts_by_happyy/" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-coral">
               <Instagram size={16} /> Instagram
             </a>
-            <a href="https://wa.me/1234567890" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-lagoon">
+            <a href="https://wa.me/+918763126640" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-lagoon">
               <MessageCircle size={16} /> WhatsApp
             </a>
-            <a href="mailto:hello@resinatelier.local" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-tide">
+            <a href="dinesh205.dk@gmail.com" className="flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm transition hover:bg-tide">
               <Mail size={16} /> Email
             </a>
           </div>
