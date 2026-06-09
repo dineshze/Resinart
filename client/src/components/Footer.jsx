@@ -11,12 +11,6 @@ export default function Footer() {
               Handmade trays, coasters, shell art, jewelry dishes, and custom
               keepsakes poured in small batches.
             </p>
-            <p className="mt-3 max-w-xl text-sm leading-6 opacity-75">
-              keyword: 
-              resin art resin art designs resin handmade products resin craft
-              ideas resin art India custom resin art resin epoxy art handmade
-              resin products resin gift items
-            </p>
           </div>
           <div className="flex flex-wrap gap-3 md:justify-end">
             <a
