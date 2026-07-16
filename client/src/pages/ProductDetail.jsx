@@ -1,6 +1,7 @@
-import { ArrowLeft, ShoppingBag, Sparkles, Zap } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Share2, Sparkles, Zap } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import api from "../api/axios";
 import EmptyState from "../components/EmptyState";
 import ProductCard from "../components/ProductCard";
@@ -18,6 +19,10 @@ export default function ProductDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setLoading(true);
+    setProduct(null);
+    setRecommended([]);
+
     api
       .get(`/products/${id}`)
       .then(({ data }) => setProduct(data))
@@ -48,6 +53,30 @@ export default function ProductDetail() {
     navigate("/checkout");
   }
 
+  async function shareProduct() {
+    const url = `${window.location.origin}/product/${product._id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name,
+          text: product.description || product.name,
+          url,
+        });
+        return;
+      } catch (error) {
+        // User canceled share or share failed; fallback to clipboard below.
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Product link copied to clipboard");
+    } catch (error) {
+      toast.error("Unable to share product link");
+    }
+  }
+
   if (loading) return <main className="mx-auto max-w-6xl px-4 py-16"><div className="h-[520px] animate-pulse rounded-[34px] glass" /></main>;
   if (!product) return <main className="mx-auto max-w-4xl px-4 py-16"><EmptyState title="Piece not found" text="The product may have been moved or sold." /></main>;
 
@@ -72,9 +101,12 @@ export default function ProductDetail() {
               </div>
             ))}
           </div>
-          <div className="sticky bottom-3 z-20 mt-8 grid gap-3 rounded-[28px] bg-pearl/86 p-3 backdrop-blur dark:bg-ink/86 sm:static sm:grid-cols-2 sm:bg-transparent sm:p-0 sm:backdrop-blur-0 dark:sm:bg-transparent">
+          <div className="sticky bottom-3 z-20 mt-8 grid gap-3 rounded-[28px] bg-pearl/86 p-3 backdrop-blur dark:bg-ink/86 sm:static sm:grid-cols-3 sm:bg-transparent sm:p-0 sm:backdrop-blur-0 dark:sm:bg-transparent">
             <button onClick={() => addToCart(product)} className="inline-flex items-center justify-center gap-2 rounded-full glass px-6 py-3 font-semibold transition hover:-translate-y-1">
               <ShoppingBag size={18} /> Add to Cart
+            </button>
+            <button onClick={shareProduct} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/80 px-6 py-3 text-sm font-semibold transition hover:-translate-y-1 hover:bg-white dark:bg-ink dark:text-pearl dark:hover:bg-white/10">
+              <Share2 size={18} /> Share
             </button>
             <button onClick={buyNow} className="inline-flex items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-pearl transition hover:-translate-y-1 hover:bg-lagoon dark:bg-pearl dark:text-ink">
               <Zap size={18} /> Buy Now
