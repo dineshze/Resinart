@@ -8,7 +8,7 @@ import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { fallbackProducts } from "../data/fallbackProducts";
 
-const categories = ["All", "Resin Art", "Keychains","Jewellery", "Preservation", "Lipan Art","Photo frame","Portrait","Name Plate"];
+const categories = ["All","Rakhi 🌸","Resin Art", "Keychains","Jewellery", "Preservation", "Lipan Art","Photo frame","Portrait","Name Plate"];
 const testimonials = [
   { name: "Maya R.", text: "The ocean tray feels like a little tide pool on my table. Beautiful finish and packaging." },
   { name: "Anika S.", text: "My custom name keychains were delicate, personal, and ready faster than expected." },
