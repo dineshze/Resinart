@@ -29,7 +29,18 @@ export default function Home() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = useMemo(() => (active === "All" ? products : products.filter((item) => item.category === active)), [active, products]);
+  const filtered = useMemo(() => {
+    if (active === "All") {
+      const shuffled = [...products];
+      for (let index = shuffled.length - 1; index > 0; index -= 1) {
+        const swapIndex = Math.floor(Math.random() * (index + 1));
+        [shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+      }
+      return shuffled;
+    }
+
+    return products.filter((item) => item.category === active);
+  }, [active, products]);
 
   async function submitCustomOrder(event) {
     event.preventDefault();
