@@ -26,7 +26,7 @@ export default function Layout() {
               <Heart size={18} fill="currentColor" />
             </span>
             <span>
-              <span className="block font-display text-xl font-bold leading-none">Resin Atelier</span>
+              <span className="block font-display text-xl font-bold leading-none">Happy Creation</span>
               <span className="text-xs uppercase tracking-[.28em] text-lagoon dark:text-tide">handmade</span>
             </span>
           </Link>

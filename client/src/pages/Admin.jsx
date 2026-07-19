@@ -7,7 +7,7 @@ import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
 
 const blankProduct = { name: "", price: "", category: "Trays", description: "", image: "", featured: false };
-const categories = ["Resin Art","Rakhi 🌸","Keychains","Jewellery", "Preservation", "Lipan Art", "Photo frame","Portrait","Name Plate"];
+const categories = ["Resin Art","Rakhi 🌸","Keychains","Hammering Glass Art", "Preservation", "Lipan Art", "Photo frame","Portrait","String Art"];
 const orderStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 const paymentStatuses = ["payment_pending", "screenshot_uploaded", "payment_verified", "payment_rejected"];
 

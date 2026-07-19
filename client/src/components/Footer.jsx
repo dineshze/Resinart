@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl rounded-[28px] bg-ink p-8 text-pearl shadow-resin dark:bg-pearl dark:text-ink">
         <div className="grid gap-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
           <div>
-            <h2 className="font-display text-4xl font-bold">Resin Atelier</h2>
+            <h2 className="font-display text-4xl font-bold">Happy Creation</h2>
             <p className="mt-3 max-w-xl text-sm leading-6 opacity-75">
               Handmade trays, coasters, shell art, jewelry dishes, and custom
               keepsakes poured in small batches.
@@ -34,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t border-white/15 pt-5 text-xs opacity-60">
-          © 2026 Resin Atelier. Handmade with care.
+          © 2026 Happy Creation. Handmade with care.
         </div>
       </div>
     </footer>

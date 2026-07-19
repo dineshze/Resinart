@@ -8,7 +8,7 @@ import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { fallbackProducts } from "../data/fallbackProducts";
 
-const categories = ["All","Rakhi 🌸","Resin Art", "Keychains","Jewellery", "Preservation", "Lipan Art","Photo frame","Portrait","Name Plate"];
+const categories = ["All","Rakhi 🌸","Keychains","Hammering Glass Art", "Preservation", "Lipan Art", "Photo frame","Portrait","String Art"];
 const testimonials = [
   { name: "Maya R.", text: "The ocean tray feels like a little tide pool on my table. Beautiful finish and packaging." },
   { name: "Anika S.", text: "My custom name keychains were delicate, personal, and ready faster than expected." },
@@ -110,7 +110,7 @@ export default function Home() {
           <Shell className="text-coral" size={34} />
           <h2 className="mt-5 font-display text-4xl font-bold">Made slowly, finished carefully.</h2>
           <p className="mt-4 leading-7 text-ink/66 dark:text-pearl/68">
-            Resin Atelier is a small handmade studio creating practical keepsakes from resin, shells, pressed botanicals, pigments, and ocean-inspired textures. Each item is poured, sanded, polished, and packed by hand.
+            Happy Creation is a small handmade studio creating practical keepsakes from resin, shells, pressed botanicals, pigments, and ocean-inspired textures. Each item is poured, sanded, polished, and packed by hand.
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
