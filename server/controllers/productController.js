@@ -1,3 +1,4 @@
+import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 import { cleanupLocalFile, deleteCloudinaryImage, uploadImageToCloudinary } from "../utils/cloudinary.js";
 
@@ -50,6 +51,38 @@ export async function deleteProduct(req, res, next) {
     if (!product) return res.status(404).json({ message: "Product not found" });
     await deleteCloudinaryImage(product.image);
     res.json({ message: "Product deleted" });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function listCategories(_req, res) {
+  const categories = await Category.find().sort({ createdAt: 1 });
+  res.json(categories);
+}
+
+export async function createCategory(req, res, next) {
+  try {
+    const name = req.body.name?.trim();
+    if (!name) return res.status(400).json({ message: "Category name is required" });
+
+    const category = await Category.create({ name });
+    res.status(201).json(category);
+  } catch (error) {
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Category already exists" });
+    }
+    next(error);
+  }
+}
+
+export async function deleteCategory(req, res, next) {
+  try {
+    const category = await Category.findByIdAndDelete(req.params.id);
+    if (!category) return res.status(404).json({ message: "Category not found" });
+
+    await Product.updateMany({ category: category.name }, { $set: { category: "Uncategorized" } });
+    res.json({ message: "Category deleted" });
   } catch (error) {
     next(error);
   }

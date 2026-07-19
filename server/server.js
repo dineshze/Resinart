@@ -21,7 +21,24 @@ const __dirname = path.dirname(__filename);
 const uploadsPath = path.join(__dirname, "..", "uploads");
 if (!fs.existsSync(uploadsPath)) fs.mkdirSync(uploadsPath, { recursive: true });
 
-app.use(cors({ origin: process.env.CLIENT_URL || "http://localhost:5173", credentials: true }));
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174"
+].filter(Boolean);
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/uploads", express.static(uploadsPath));

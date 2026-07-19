@@ -8,7 +8,7 @@ import ProductCard from "../components/ProductCard";
 import SkeletonCard from "../components/SkeletonCard";
 import { fallbackProducts } from "../data/fallbackProducts";
 
-const categories = ["All","Rakhi 🌸","Keychains","Hammering Glass Art", "Preservation", "Lipan Art", "Photo frame","Portrait","String Art"];
+const defaultCategories = ["All"];
 const testimonials = [
   { name: "Maya R.", text: "The ocean tray feels like a little tide pool on my table. Beautiful finish and packaging." },
   { name: "Anika S.", text: "My custom name keychains were delicate, personal, and ready faster than expected." },
@@ -17,15 +17,26 @@ const testimonials = [
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState(defaultCategories);
   const [active, setActive] = useState("All");
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({ customerName: "", email: "", phone: "", productType: "Custom Gift", budget: "", notes: "" });
 
   useEffect(() => {
-    api
-      .get("/products")
-      .then(({ data }) => setProducts(data.length ? data : fallbackProducts))
-      .catch(() => setProducts(fallbackProducts))
+    Promise.all([
+      api.get("/products"),
+      api.get("/products/categories")
+    ])
+      .then(([productRes, categoryRes]) => {
+        const nextProducts = productRes.data.length ? productRes.data : fallbackProducts;
+        setProducts(nextProducts);
+        const nextCategories = ["All", ...categoryRes.data.map((category) => category.name)];
+        setCategoryOptions(nextCategories);
+      })
+      .catch(() => {
+        setProducts(fallbackProducts);
+        setCategoryOptions(defaultCategories);
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -103,7 +114,7 @@ export default function Home() {
             <h2 className="mt-3 font-display text-4xl font-bold sm:text-5xl">Handmade pieces</h2>
           </div>
           <div className="flex max-w-full gap-2 overflow-x-auto pb-2">
-            {categories.map((category) => (
+            {categoryOptions.map((category) => (
               <button key={category} onClick={() => setActive(category)} className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition ${active === category ? "bg-ink text-pearl dark:bg-pearl dark:text-ink" : "glass hover:bg-white/80"}`}>
                 {category}
               </button>
@@ -155,7 +166,7 @@ export default function Home() {
             <input key={key} required={key !== "phone" && key !== "budget"} value={form[key]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} placeholder={label} className="rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none transition focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10" />
           ))}
           <select value={form.productType} onChange={(e) => setForm({ ...form, productType: e.target.value })} className="rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none transition focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10">
-            {categories.slice(1).map((category) => <option key={category}>{category}</option>)}
+            {categoryOptions.slice(1).map((category) => <option key={category}>{category}</option>)}
           </select>
           <textarea required value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Tell us about the piece" className="min-h-32 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none transition focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10 sm:col-span-2" />
           <button className="rounded-full bg-ink px-6 py-3 font-semibold text-pearl transition hover:-translate-y-1 hover:bg-lagoon dark:bg-pearl dark:text-ink sm:col-span-2">Send Request</button>

@@ -6,8 +6,7 @@ import EmptyState from "../components/EmptyState";
 import { cloudinaryImage } from "../utils/images";
 import { formatMoney } from "../utils/money";
 
-const blankProduct = { name: "", price: "", category: "Trays", description: "", image: "", featured: false };
-const categories = ["Resin Art","Rakhi 🌸","Keychains","Hammering Glass Art", "Preservation", "Lipan Art", "Photo frame","Portrait","String Art"];
+const blankProduct = { name: "", price: "", category: "Uncategorized", description: "", image: "", featured: false };
 const orderStatuses = ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"];
 const paymentStatuses = ["payment_pending", "screenshot_uploaded", "payment_verified", "payment_rejected"];
 
@@ -25,6 +24,8 @@ export default function Admin() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [customRequests, setCustomRequests] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState("");
   const [analytics, setAnalytics] = useState({ products: 0, orders: 0, pendingOrders: 0, deliveredOrders: 0, revenue: 0 });
   const [form, setForm] = useState(blankProduct);
   const [file, setFile] = useState(null);
@@ -38,16 +39,18 @@ export default function Admin() {
   async function loadAdmin() {
     setLoading(true);
     try {
-      const [productRes, orderRes, customRes, analyticsRes] = await Promise.all([
+      const [productRes, orderRes, customRes, analyticsRes, categoryRes] = await Promise.all([
         api.get("/products"),
         api.get("/orders"),
         api.get("/orders/custom"),
-        api.get("/orders/admin/analytics")
+        api.get("/orders/admin/analytics"),
+        api.get("/products/categories")
       ]);
       setProducts(productRes.data);
       setOrders(orderRes.data);
       setCustomRequests(customRes.data);
       setAnalytics(analyticsRes.data);
+      setCategories(categoryRes.data);
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not load dashboard");
     } finally {
@@ -132,6 +135,30 @@ export default function Admin() {
     }
   }
 
+  async function addCategory(event) {
+    event.preventDefault();
+    if (!newCategory.trim()) return;
+
+    try {
+      await api.post("/products/categories", { name: newCategory.trim() });
+      toast.success("Category added");
+      setNewCategory("");
+      loadAdmin();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Could not add category");
+    }
+  }
+
+  async function deleteCategory(id) {
+    try {
+      await api.delete(`/products/categories/${id}`);
+      toast.success("Category deleted");
+      loadAdmin();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Could not delete category");
+    }
+  }
+
   async function updateOrderStatus(id, status) {
     try {
       const { data } = await api.patch(`/orders/${id}`, { orderStatus: status });
@@ -201,7 +228,8 @@ export default function Admin() {
             <div className="grid gap-4 sm:grid-cols-2">
               <input required type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Price" className="min-w-0 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10" />
               <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="min-w-0 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10">
-                {categories.map((category) => <option key={category}>{category}</option>)}
+                <option value="Uncategorized">Uncategorized</option>
+                {categories.map((category) => <option key={category._id} value={category.name}>{category.name}</option>)}
               </select>
             </div>
             <textarea required value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Description" className="min-h-24 min-w-0 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10" />
@@ -221,7 +249,22 @@ export default function Admin() {
         </form>
 
         <div className="min-w-0 rounded-[34px] glass p-5 shadow-resin sm:p-6">
-          <h2 className="font-display text-3xl font-bold">Products</h2>
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="font-display text-3xl font-bold">Products</h2>
+            <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[.2em] text-ink/70 dark:bg-white/10 dark:text-pearl/70">{products.length} items</span>
+          </div>
+          <form onSubmit={addCategory} className="mt-5 flex flex-col gap-3 rounded-3xl bg-white/44 p-3 dark:bg-white/8 sm:flex-row">
+            <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="Add a category" className="min-w-0 flex-1 rounded-2xl border border-white/60 bg-white/70 px-4 py-3 outline-none focus:ring-2 focus:ring-tide dark:border-white/10 dark:bg-white/10" />
+            <button className="rounded-full bg-lagoon px-5 py-3 font-semibold text-pearl">Add</button>
+          </form>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {categories.map((category) => (
+              <div key={category._id} className="flex items-center gap-2 rounded-full bg-white/70 px-3 py-2 text-sm font-semibold dark:bg-white/10">
+                <span>{category.name}</span>
+                {category.name !== "Uncategorized" && <button type="button" onClick={() => deleteCategory(category._id)} className="text-coral">×</button>}
+              </div>
+            ))}
+          </div>
           <div className="mt-5 grid gap-3 max-h-screen overflow-y-auto pr-2">
             {loading && <div className="h-28 animate-pulse rounded-3xl bg-white/50 dark:bg-white/10" />}
             {!loading && products.length === 0 && <EmptyState title="No products yet" text="Add the first handmade piece to publish it." />}
